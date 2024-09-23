@@ -3369,135 +3369,98 @@ function library:CreateWindow(name, size, hidebutton)
             return sector
         end
 
-
 function tab:CreateConfigSystem(side)
-            local configSystem = { }
+    local configSystem = {}
 
-            configSystem.configFolder = window.name .. "/" .. tostring(game.PlaceId)
-            if (not isfolder(configSystem.configFolder)) then
-                makefolder(configSystem.configFolder)
-            end
-
-            configSystem.sector = tab:CreateSector("Configs", side or "left")
-
-            local ConfigName = configSystem.sector:AddTextbox("Config Name", "", ConfigName, function() end, "")
-            local default = tostring(listfiles(configSystem.configFolder)[1] or ""):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", "")
-            local Config = configSystem.sector:AddDropdown("Configs", {}, default, false, function() end, "")
-            for i,v in pairs(listfiles(configSystem.configFolder)) do
-                if v:find(".txt") then
-                    Config:Add(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
-                end
-            end
-
-            configSystem.Create = configSystem.sector:AddButton("Create", function()
-                for i,v in pairs(listfiles(configSystem.configFolder)) do
-                    Config:Remove(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
-                end
-
-                if ConfigName:Get() and ConfigName:Get() ~= "" then
-                    local config = {}
+    configSystem.configFolder = "Sentinel"
     
-                    for i,v in pairs(library.flags) do
-                        if (v ~= nil and v ~= "") then
-                            if (typeof(v) == "Color3") then
-                                config[i] = { v.R, v.G, v.B }
-                            elseif (tostring(v):find("Enum.KeyCode")) then
-                                config[i] = v.Name
-                            elseif (typeof(v) == "table") then
-                                config[i] = { v }
-                            else
-                                config[i] = v
-                            end
-                        end
-                    end
-    
-                    writefile(configSystem.configFolder .. "/" .. ConfigName:Get() .. ".txt", httpservice:JSONEncode(config))
-    
-                    for i,v in pairs(listfiles(configSystem.configFolder)) do
-                        if v:find(".txt") then
-                            Config:Add(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
-                        end
-                    end
-                end
-            end)
+    if not isfolder(configSystem.configFolder) then
+        makefolder(configSystem.configFolder)
+    end
 
-            configSystem.Save = configSystem.sector:AddButton("Save", function()
-                local config = {}
-                if Config:Get() and Config:Get() ~= "" then
-                    for i,v in pairs(library.flags) do
-                        if (v ~= nil and v ~= "") then
-                            if (typeof(v) == "Color3") then
-                                config[i] = { v.R, v.G, v.B }
-                            elseif (tostring(v):find("Enum.KeyCode")) then
-                                config[i] = "Enum.KeyCode." .. v.Name
-                            elseif (typeof(v) == "table") then
-                                config[i] = { v }
-                            else
-                                config[i] = v
-                            end
-                        end
-                    end
+    configSystem.sector = tab:CreateSector("Configs", side or "left")
+
+    local ConfigName = configSystem.sector:AddTextbox("Config Name", "", function() end, "")
+    local default = tostring(listfiles(configSystem.configFolder)[1] or ""):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", "")
+    local Config = configSystem.sector:AddDropdown("Configs", {}, default, false, function() end, "")
     
-                    writefile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
-                end
-            end)
-
-            configSystem.Load = configSystem.sector:AddButton("Load", function()
-                local Success = pcall(readfile, configSystem.configFolder .. "/" .. Config:Get() .. ".txt")
-                if (Success) then
-                    pcall(function() 
-                        local ReadConfig = httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
-                        local NewConfig = {}
-    
-                        for i,v in pairs(ReadConfig) do
-                            if (typeof(v) == "table") then
-                                if (typeof(v[1]) == "number") then
-                                    NewConfig[i] = Color3.new(v[1], v[2], v[3])
-                                elseif (typeof(v[1]) == "table") then
-                                    NewConfig[i] = v[1]
-                                end
-                            elseif (tostring(v):find("Enum.KeyCode.")) then
-                                NewConfig[i] = Enum.KeyCode[tostring(v):gsub("Enum.KeyCode.", "")]
-                            else
-                                NewConfig[i] = v
-                            end
-                        end
-    
-                        library.flags = NewConfig
-    
-                        for i,v in pairs(library.flags) do
-                            for i2,v2 in pairs(library.items) do
-                                if (i ~= nil and i ~= "" and i ~= "Configs_Name" and i ~= "Configs" and v2.flag ~= nil) then
-                                    if (v2.flag == i) then
-                                        pcall(function() 
-                                            v2:Set(v)
-                                        end)
-                                    end
-                                end
-                            end
-                        end
-                    end)
-                end
-            end)
-
-            configSystem.Delete = configSystem.sector:AddButton("Delete", function()
-                for i,v in pairs(listfiles(configSystem.configFolder)) do
-                    Config:Remove(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
-                end
-
-                if (not Config:Get() or Config:Get() == "") then return end
-                if (not isfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt")) then return end
-                delfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt")
-
-                for i,v in pairs(listfiles(configSystem.configFolder)) do
-                    if v:find(".txt") then
-                        Config:Add(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
-                    end
-                end
-            end)
-
-            return configSystem
+    for _, v in pairs(listfiles(configSystem.configFolder)) do
+        if v:find(".txt") then
+            Config:Add(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
         end
+    end
+
+    configSystem.Create = configSystem.sector:AddButton("Create", function()
+        if ConfigName:Get() and ConfigName:Get() ~= "" then
+            local config = {}
+            for key, value in pairs(library.flags) do
+                if value ~= nil and value ~= "" then
+                    if typeof(value) == "Color3" then
+                        config[key] = { value.R, value.G, value.B }
+                    elseif tostring(value):find("Enum.KeyCode") then
+                        config[key] = value.Name
+                    else
+                        config[key] = value
+                    end
+                end
+            end
+
+            writefile(configSystem.configFolder .. "/" .. ConfigName:Get() .. ".txt", httpservice:JSONEncode(config))
+            Config:Add(ConfigName:Get())
+        end
+    end)
+
+    configSystem.Save = configSystem.sector:AddButton("Save", function()
+        if Config:Get() and Config:Get() ~= "" then
+            local config = {}
+            for key, value in pairs(library.flags) do
+                if value ~= nil and value ~= "" then
+                    if typeof(value) == "Color3" then
+                        config[key] = { value.R, value.G, value.B }
+                    elseif tostring(value):find("Enum.KeyCode") then
+                        config[key] = "Enum.KeyCode." .. value.Name
+                    else
+                        config[key] = value
+                    end
+                end
+            end
+
+            writefile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
+        end
+    end)
+
+    configSystem.Load = configSystem.sector:AddButton("Load", function()
+        local configPath = configSystem.configFolder .. "/" .. Config:Get() .. ".txt"
+        local success, readData = pcall(readfile, configPath)
+        if success and readData then
+            local readConfig = httpservice:JSONDecode(readData)
+            for key, value in pairs(readConfig) do
+                if typeof(value) == "table" and typeof(value[1]) == "number" then
+                    library.flags[key] = Color3.new(value[1], value[2], value[3])
+                elseif tostring(value):find("Enum.KeyCode.") then
+                    library.flags[key] = Enum.KeyCode[tostring(value):gsub("Enum.KeyCode.", "")]
+                else
+                    library.flags[key] = value
+                end
+            end
+        end
+    end)
+
+    configSystem.Delete = configSystem.sector:AddButton("Delete", function()
+        if Config:Get() and Config:Get() ~= "" then
+            local filePath = configSystem.configFolder .. "/" .. Config:Get() .. ".txt"
+            if isfile(filePath) then
+                delfile(filePath)
+                Config:Remove(Config:Get())
+            end
+        end
+    end)
+
+    return configSystem
+end
+
+
+
 
 
         --[[ not finished lol
