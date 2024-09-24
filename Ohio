@@ -1,1 +1,3 @@
+print("sigma")
+
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Ohiogyatskibidirizz3000/Sigma/refs/heads/main/Protected_3440343414071512.txt",true))()
