@@ -3063,6 +3063,38 @@ Menu.ComboBox("MAIN", "Settings", "Backtrack Material", selectedMaterial, materi
     getgenv().Settings.BacktrackColor = color  -- Set the selected color to BacktrackColor
 end, "Colorpicker Tooltip")
 
+Menu.Tab("MISC")
+
+Menu.Container("MISC", "Cframe", "Left")
+
+Menu.CheckBox("MISC", "Cframe", "Cframe", getgenv().cframespeedtoggle, function(value)
+    getgenv().cframespeedtoggle = value
+end)
+
+getgenv().speedvalue = 0.5
+
+Menu.TextBox("MISC", "Cframe", "Cframe Speed", tostring(getgenv().speedvalue), function(input)
+    getgenv().speedvalue = tonumber(input) or getgenv().speedvalue
+end, "Speed")
+
+Menu.Container("MISC", "Orbit", "Right")
+
+Menu.CheckBox("MISC", "Orbit", "Toggle", getgenv().Settings.TargetStrafe.Enabled, function(value)
+    getgenv().Settings.TargetStrafe.Enabled = value
+end)
+
+Menu.TextBox("MISC", "Orbit", "Distance", tostring(getgenv().Settings.TargetStrafe.Distance), function(input)
+    getgenv().Settings.TargetStrafe.Distance = tonumber(input) or getgenv().Settings.TargetStrafe.Distance
+end, "Distance")
+
+Menu.TextBox("MISC", "Orbit", "Speed", tostring(getgenv().Settings.TargetStrafe.Speed), function(input)
+    getgenv().Settings.TargetStrafe.Speed = tonumber(input) or getgenv().Settings.TargetStrafe.Speed
+end, "Speed")
+
+Menu.TextBox("MISC", "Orbit", "Height", tostring(getgenv().Settings.TargetStrafe.Height), function(input)
+    getgenv().Settings.TargetStrafe.Height = tonumber(input) or getgenv().Settings.TargetStrafe.Height
+end, "Speed")
+
 Menu:SetTitle("Sentinel.CC")
 Menu:SetVisible(true)
 Menu:Init()
@@ -3135,9 +3167,6 @@ local function createButton(screenGui)
         end
     end)
 end
-
-local screenGui = createScreenGui()
-createButton(screenGui)
 
 
 local screenGui = createScreenGui()
