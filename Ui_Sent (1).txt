@@ -2891,8 +2891,8 @@ Menu.Notify("Script Loaded.", 2)
 Menu.Tab("MAIN")
 Menu.Container("MAIN", "Toggle", "Left")
 
-Menu.CheckBox("MAIN", "Toggle", "Aimlock", false, function(value) 
-    Getgenv().Settings.Enabled = value
+Menu.CheckBox("MAIN", "Toggle", "Aimlock", getgenv().Settings.Enabled, function(value) 
+    getgenv().Settings.Enabled = value
 end, "Checkbox Tooltip")
 
 Menu.CheckBox("MAIN", "Toggle", "Camera", getgenv().Settings.Camera, function(value)
