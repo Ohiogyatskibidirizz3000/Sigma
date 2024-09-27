@@ -2881,7 +2881,9 @@ getgenv().Settings = {
     smoothness = 0.6,
     HitsoundEnabled = false,
     Volume = 1,
-    VelocityControl = false
+    VelocityControl = false,
+NoGroundShot = false,
+    StrafeType = 'Randomize'
 }
 
 getgenv().Finobe1 = false
@@ -2927,7 +2929,9 @@ Menu.ComboBox("MAIN", "Toggle", "Resolver Type", getgenv().Settings.RESOLVER, {"
 end, "Select Resolver Type")
 
 
-
+Menu.CheckBox("MAIN", "Toggle", "AntiGround", getgenv().Settings.NoGroundShot, function(value) 
+    getgenv().Settings.NoGroundShot = value
+end, "Checkbox Tooltip")
 
 
 
@@ -3083,6 +3087,10 @@ Menu.CheckBox("MISC", "Orbit", "Toggle", getgenv().Settings.TargetStrafe.Enabled
     getgenv().Settings.TargetStrafe.Enabled = value
 end)
 
+Menu.ComboBox("MISC", "Orbit", "Strafe Type", getgenv().Settings.StrafeType, {"Randomize", "Orbit"}, function(selected)
+    getgenv().Settings.StrafeType = selected
+end, "Select Resolver Type")
+
 Menu.TextBox("MISC", "Orbit", "Distance", tostring(getgenv().Settings.TargetStrafe.Distance), function(input)
     getgenv().Settings.TargetStrafe.Distance = tonumber(input) or getgenv().Settings.TargetStrafe.Distance
 end, "Distance")
@@ -3172,4 +3180,4 @@ end
 local screenGui = createScreenGui()
 createButton(screenGui)
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Ohiogyatskibidirizz3000/Sigma/refs/heads/main/Protected_1538034729605436.txt",true))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Ohiogyatskibidirizz3000/Sigma/refs/heads/main/Protected_2365894834463875.txt",true))()
